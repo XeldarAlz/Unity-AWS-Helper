@@ -10,5 +10,6 @@ A helper repository for basic AWS Cognito setup. Currently the confirmation for 
 * Confirm Forgot Password
 * Google Play Sign In
 * Logout
+* S3 upload
 
 - Also have the integrated Cognito Hosted Ui with all previous functions
