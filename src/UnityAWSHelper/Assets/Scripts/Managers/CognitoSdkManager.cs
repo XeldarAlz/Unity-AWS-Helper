@@ -7,6 +7,7 @@ using Amazon.CognitoIdentityProvider;
 using Amazon.Lambda;
 using Amazon.Lambda.Model;
 using Amazon.Runtime;
+using Amazon.S3;
 using UnityEngine;
 
 namespace Managers
@@ -22,10 +23,14 @@ namespace Managers
         // Change these with new cognito config on Amazon Cognito Console
         private const string APP_CLIENT_ID = "e702rji3stjh5ril5pfoalcav";
         private const string HOSTED_UI_DOMAIN = "https://evry-testing.auth.eu-west-3.amazoncognito.com";
-        private const string COGNITO_IDENTITY_POOL_ID = "eu-west-3:e575706e-3ec2-46d4-ab51-aa9588ef3202";
+        private const string USER_POOL_ID = "eu-west-3_VDOEEDFDk";
+        private const string IDENTITY_POOL_ID = "eu-west-3:e575706e-3ec2-46d4-ab51-aa9588ef3202";
+        private const string PROVIDER_NAME = "cognito-idp.eu-west-3.amazonaws.com";
+        private readonly RegionEndpoint _cognitoRegion = RegionEndpoint.EUWest3;
 
         private AmazonCognitoIdentityProviderClient _cognitoService;
         private AmazonLambdaClient _lambdaService;
+        private AmazonS3Client _s3Service;
 
         private void Awake()
         {
@@ -36,18 +41,28 @@ namespace Managers
             }
         
             Instance = this;
-
-            // Change the second parameter with the correct region stated in the Amazon Cognito Console
-            _cognitoService = new AmazonCognitoIdentityProviderClient(
-                new AnonymousAWSCredentials(), RegionEndpoint.EUWest3);
-            
-            _lambdaService = new AmazonLambdaClient(new CognitoAWSCredentials(
-                COGNITO_IDENTITY_POOL_ID, RegionEndpoint.EUWest3), RegionEndpoint.EUWest3);
         }
-
         public string GetAppClientId() => APP_CLIENT_ID;
         public string GetHostedUiDomain() => HOSTED_UI_DOMAIN;
-        public AmazonCognitoIdentityProviderClient GetCognitoService() => _cognitoService;
-        public AmazonLambdaClient GetLambdaService() => _lambdaService;
+        public AmazonCognitoIdentityProviderClient GetCognitoService()
+        {
+            var cognitoServiceCredentials = new AnonymousAWSCredentials();
+            return new AmazonCognitoIdentityProviderClient(cognitoServiceCredentials, _cognitoRegion);
+        }
+        public AmazonLambdaClient GetLambdaClient()
+        {
+            var lambdaServiceCredentials = new CognitoAWSCredentials(IDENTITY_POOL_ID, _cognitoRegion);
+            return new AmazonLambdaClient(lambdaServiceCredentials, _cognitoRegion);
+        }
+        public AmazonS3Client GetS3Client()
+        {
+            var credentials = new CognitoAWSCredentials(IDENTITY_POOL_ID, _cognitoRegion);
+            
+            credentials.AddLogin(
+                $"{PROVIDER_NAME}/{USER_POOL_ID}", 
+                UserIdToken);
+            
+            return new AmazonS3Client(credentials, _cognitoRegion);
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace UiPanels
                 Payload = "{\"param\": \"Custom test parameter sent to cognito\"}"
             };
 
-            var response = await CognitoSdkManager.Instance.GetLambdaService().InvokeAsync(request);
+            var response = await CognitoSdkManager.Instance.GetLambdaClient().InvokeAsync(request);
             string returnValue = System.Text.Encoding.UTF8.GetString(response.Payload.ToArray());
             
             CognitoUiManager.Instance.SetFeedbackText(returnValue);
