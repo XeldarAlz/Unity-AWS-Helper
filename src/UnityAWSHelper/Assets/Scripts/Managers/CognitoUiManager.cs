@@ -20,7 +20,8 @@ namespace Managers
             HostedUi,
             Logout,
             Lambda,
-            S3
+            S3,
+            DynamoDB
         }
 
         public static CognitoUiManager Instance { get; private set; }
@@ -48,6 +49,7 @@ namespace Managers
             CognitoEventManager.Instance.OnCognitoLogout += () => ShowPanel(CognitoPanel.Logout);
             CognitoEventManager.Instance.OnCognitoLambda += () => ShowPanel(CognitoPanel.Lambda);
             CognitoEventManager.Instance.OnCognitoS3 += () => ShowPanel(CognitoPanel.S3);
+            CognitoEventManager.Instance.OnCognitoDynamoDB += () => ShowPanel(CognitoPanel.DynamoDB);
         }
 
         private void OnDisable()
@@ -62,6 +64,7 @@ namespace Managers
             CognitoEventManager.Instance.OnCognitoLogout -= () => ShowPanel(CognitoPanel.Logout);
             CognitoEventManager.Instance.OnCognitoLambda -= () => ShowPanel(CognitoPanel.Lambda);
             CognitoEventManager.Instance.OnCognitoS3 -= () => ShowPanel(CognitoPanel.S3);
+            CognitoEventManager.Instance.OnCognitoDynamoDB -= () => ShowPanel(CognitoPanel.DynamoDB);
         }
 
         private void Start()

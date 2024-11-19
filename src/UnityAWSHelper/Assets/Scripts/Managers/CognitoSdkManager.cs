@@ -1,11 +1,8 @@
-﻿using System.IO;
-using System.Net;
-using System.Threading.Tasks;
-using Amazon;
+﻿using Amazon;
 using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentityProvider;
+using Amazon.DynamoDBv2;
 using Amazon.Lambda;
-using Amazon.Lambda.Model;
 using Amazon.Runtime;
 using Amazon.S3;
 using UnityEngine;
@@ -20,17 +17,22 @@ namespace Managers
         public string UserIdToken { get; set; }
         public string UserRefreshToken { get; set; }
         
-        // Change these with new cognito config on Amazon Cognito Console
+        // Change these with new config on AWS Console
+        // COGNITO
         private const string APP_CLIENT_ID = "e702rji3stjh5ril5pfoalcav";
         private const string HOSTED_UI_DOMAIN = "https://evry-testing.auth.eu-west-3.amazoncognito.com";
         private const string USER_POOL_ID = "eu-west-3_VDOEEDFDk";
         private const string IDENTITY_POOL_ID = "eu-west-3:e575706e-3ec2-46d4-ab51-aa9588ef3202";
-        private const string PROVIDER_NAME = "cognito-idp.eu-west-3.amazonaws.com";
         private readonly RegionEndpoint _cognitoRegion = RegionEndpoint.EUWest3;
-
-        private AmazonCognitoIdentityProviderClient _cognitoService;
-        private AmazonLambdaClient _lambdaService;
-        private AmazonS3Client _s3Service;
+        
+        // S3
+        private const string PROVIDER_NAME = "cognito-idp.eu-west-3.amazonaws.com"; //
+        
+        // DYNAMODB
+        // Only for testing purposes. Exposing this data is not good practice because it is sensitive data.
+        // Should not be exposed directly. Tables needs to be secure!
+        private const string DYNAMO_DB_ACCESS_KEY = "AKIAQ4NSBEGGX6LBTJUN";
+        private const string DYNAMO_DB_SECRET_KEY = "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";
 
         private void Awake()
         {
@@ -44,6 +46,7 @@ namespace Managers
         }
         public string GetAppClientId() => APP_CLIENT_ID;
         public string GetHostedUiDomain() => HOSTED_UI_DOMAIN;
+
         public AmazonCognitoIdentityProviderClient GetCognitoService()
         {
             var cognitoServiceCredentials = new AnonymousAWSCredentials();
@@ -63,6 +66,10 @@ namespace Managers
                 UserIdToken);
             
             return new AmazonS3Client(credentials, _cognitoRegion);
+        }
+        public AmazonDynamoDBClient GetDynamoDBClient()
+        {
+            return new AmazonDynamoDBClient(DYNAMO_DB_ACCESS_KEY, DYNAMO_DB_SECRET_KEY, _cognitoRegion);
         }
     }
 }
