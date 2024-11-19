@@ -10,13 +10,13 @@ namespace UiPanels
         public async void GlobalSignOut()
         {
             bool success = await GlobalSignOutAsync();
-            Debug.Log($"Global sign-out status: {success}");
+            CognitoUiManager.Instance.SetFeedbackText($"Global sign-out status: {success}");
         }
 
         public async void PartialSignOut()
         {
             bool success = await PartialSignOutAsync();
-            Debug.Log($"Partial sign-out status: {success}");
+            CognitoUiManager.Instance.SetFeedbackText($"Partial sign-out status: {success}");
         }
         
         private async Task<bool> GlobalSignOutAsync()

@@ -15,6 +15,7 @@ namespace Managers
         public event CognitoUiStateDelegate OnCognitoConfirmRecover;
         public event CognitoUiStateDelegate OnCognitoHostedUi;
         public event CognitoUiStateDelegate OnCognitoLogout;
+        public event CognitoUiStateDelegate OnCognitoLambda;
 
         public void CognitoSignUp() => OnCognitoSignUp?.Invoke();
         public void CognitoConfirm() => OnCognitoConfirm?.Invoke();
@@ -24,6 +25,7 @@ namespace Managers
         public void CognitoConfirmRecover() => OnCognitoConfirmRecover?.Invoke();
         public void CognitoHostedUi() => OnCognitoHostedUi?.Invoke();
         public void CognitoLogout() => OnCognitoLogout?.Invoke();
+        public void CognitoLambda() => OnCognitoLambda?.Invoke();
      
         private void Awake()
         {

@@ -14,14 +14,13 @@ namespace UiPanels
         public async void DeleteUser()
         {
             bool success = await DeleteUserAsync();
-            Debug.Log($"Delete status: {success}");
 
             if (!success)
             {
                 success = await DeleteUserAsync();
-                Debug.Log($"Delete status: {success}");
-                CognitoUiManager.Instance.SetFeedbackText($"Delete status: {success}");
             }
+            
+            CognitoUiManager.Instance.SetFeedbackText($"Delete status: {success}");
         }
         
         private async Task<bool> DeleteUserAsync()
@@ -38,6 +37,7 @@ namespace UiPanels
             }
             catch (Exception e)
             {
+                CognitoUiManager.Instance.SetFeedbackText($"Got exception: {e}, Delete status: {e.Message}");
                 Debug.Log(e.Message);
                 bool success = await RefreshAuthAsync();
                 Debug.Log($"Refresh status: {success}");

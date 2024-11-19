@@ -18,7 +18,8 @@ namespace Managers
             Recover,
             ConfirmRecover,
             HostedUi,
-            Logout
+            Logout,
+            Lambda
         }
 
         public static CognitoUiManager Instance { get; private set; }
@@ -44,6 +45,7 @@ namespace Managers
             CognitoEventManager.Instance.OnCognitoConfirmRecover += () => ShowPanel(CognitoPanel.ConfirmRecover);
             CognitoEventManager.Instance.OnCognitoHostedUi += () => ShowPanel(CognitoPanel.HostedUi);
             CognitoEventManager.Instance.OnCognitoLogout += () => ShowPanel(CognitoPanel.Logout);
+            CognitoEventManager.Instance.OnCognitoLambda += () => ShowPanel(CognitoPanel.Lambda);
         }
 
         private void OnDisable()
@@ -56,6 +58,7 @@ namespace Managers
             CognitoEventManager.Instance.OnCognitoConfirmRecover -= () => ShowPanel(CognitoPanel.ConfirmRecover);
             CognitoEventManager.Instance.OnCognitoHostedUi -= () => ShowPanel(CognitoPanel.HostedUi);
             CognitoEventManager.Instance.OnCognitoLogout -= () => ShowPanel(CognitoPanel.Logout);
+            CognitoEventManager.Instance.OnCognitoLambda -= () => ShowPanel(CognitoPanel.Lambda);
         }
 
         private void Start()
