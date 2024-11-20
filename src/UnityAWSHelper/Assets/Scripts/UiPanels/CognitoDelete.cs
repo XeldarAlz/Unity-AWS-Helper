@@ -20,7 +20,7 @@ namespace UiPanels
                 success = await DeleteUserAsync();
             }
             
-            CognitoUiManager.Instance.SetFeedbackText($"Delete status: {success}");
+            AwsUiManager.Instance.SetFeedbackText($"Delete status: {success}");
         }
         
         private async Task<bool> DeleteUserAsync()
@@ -29,15 +29,15 @@ namespace UiPanels
             {
                 var deleteUserRequest = new DeleteUserRequest()
                 {
-                    AccessToken = CognitoSdkManager.Instance.UserAccessToken
+                    AccessToken = AwsSdkManager.Instance.UserAccessToken
                 };
 
-                var response = await CognitoSdkManager.Instance.GetCognitoService().DeleteUserAsync(deleteUserRequest);
+                var response = await AwsSdkManager.Instance.GetCognitoService().DeleteUserAsync(deleteUserRequest);
                 return response.HttpStatusCode == HttpStatusCode.OK;
             }
             catch (Exception e)
             {
-                CognitoUiManager.Instance.SetFeedbackText($"Got exception: {e}, Delete status: {e.Message}");
+                AwsUiManager.Instance.SetFeedbackText($"Got exception: {e}, Delete status: {e.Message}");
                 Debug.Log(e.Message);
                 bool success = await RefreshAuthAsync();
                 Debug.Log($"Refresh status: {success}");
@@ -48,19 +48,19 @@ namespace UiPanels
         private async Task<bool> RefreshAuthAsync()
         {
             var authParameters = new Dictionary<string, string>();
-            authParameters.Add("REFRESH_TOKEN", CognitoSdkManager.Instance.UserRefreshToken);
+            authParameters.Add("REFRESH_TOKEN", AwsSdkManager.Instance.UserRefreshToken);
 
             var authRequest = new InitiateAuthRequest
             {
-                ClientId = CognitoSdkManager.Instance.GetAppClientId(),
+                ClientId = AwsSdkManager.Instance.GetAppClientId(),
                 AuthParameters = authParameters,
                 AuthFlow = AuthFlowType.REFRESH_TOKEN_AUTH,
             };
 
-            var response = await CognitoSdkManager.Instance.GetCognitoService().InitiateAuthAsync(authRequest);
+            var response = await AwsSdkManager.Instance.GetCognitoService().InitiateAuthAsync(authRequest);
             
-            CognitoSdkManager.Instance.UserAccessToken = response.AuthenticationResult.AccessToken;
-            CognitoSdkManager.Instance.UserRefreshToken = response.AuthenticationResult.RefreshToken;
+            AwsSdkManager.Instance.UserAccessToken = response.AuthenticationResult.AccessToken;
+            AwsSdkManager.Instance.UserRefreshToken = response.AuthenticationResult.RefreshToken;
             
             return response.HttpStatusCode == HttpStatusCode.OK;
         }

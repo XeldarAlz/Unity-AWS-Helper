@@ -67,7 +67,7 @@ namespace UiPanels
         private IEnumerator GetUserInfo()
         {
             using (var webRequest =
-                   UnityWebRequest.Get($"{CognitoSdkManager.Instance.GetHostedUiDomain()}/oauth2/userInfo"))
+                   UnityWebRequest.Get($"{AwsSdkManager.Instance.GetHostedUiDomain()}/oauth2/userInfo"))
             {
                 webRequest.SetRequestHeader("Content-Type", "application/x-amz-json-1.1; charset=UTF-8");
                 webRequest.SetRequestHeader("Authorization", $"Bearer {_accessToken}");
@@ -119,7 +119,7 @@ namespace UiPanels
             string callbackUrl = "my-demo-app://login";
 
             Application.OpenURL(
-                $"{CognitoSdkManager.Instance.GetHostedUiDomain()}/oauth2/authorize?client_id={CognitoSdkManager.Instance.GetAppClientId()}&response_type=token&scope=aws.cognito.signin.user.admin+openid&redirect_uri={callbackUrl}");
+                $"{AwsSdkManager.Instance.GetHostedUiDomain()}/oauth2/authorize?client_id={AwsSdkManager.Instance.GetAppClientId()}&response_type=token&scope=aws.cognito.signin.user.admin+openid&redirect_uri={callbackUrl}");
         }
         
         public void LoginWithGoogle()
@@ -127,7 +127,7 @@ namespace UiPanels
             string callbackUrl = "my-demo-app://login";
 
             Application.OpenURL(
-                $"{CognitoSdkManager.Instance.GetHostedUiDomain()}/oauth2/authorize?identity_provider=Google&client_id={CognitoSdkManager.Instance.GetAppClientId()}&response_type=token&scope=aws.cognito.signin.user.admin+openid&redirect_uri={callbackUrl}");
+                $"{AwsSdkManager.Instance.GetHostedUiDomain()}/oauth2/authorize?identity_provider=Google&client_id={AwsSdkManager.Instance.GetAppClientId()}&response_type=token&scope=aws.cognito.signin.user.admin+openid&redirect_uri={callbackUrl}");
         }
     }
 

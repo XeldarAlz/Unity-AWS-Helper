@@ -17,7 +17,7 @@ namespace UiPanels
         {
             bool success = await ConfirmSignupAsync();
         
-            CognitoUiManager.Instance.SetFeedbackText(success
+            AwsUiManager.Instance.SetFeedbackText(success
                 ? "Successfully confirmed user"
                 : "An error occured while confirming user");
         }
@@ -26,12 +26,12 @@ namespace UiPanels
         {
             var signUpRequest = new ConfirmSignUpRequest
             {
-                ClientId = CognitoSdkManager.Instance.GetAppClientId(),
+                ClientId = AwsSdkManager.Instance.GetAppClientId(),
                 ConfirmationCode = _confirmSignUpCode.text,
                 Username = _confirmSignUpEmail.text
             };
 
-            var response = await CognitoSdkManager.Instance.GetCognitoService().ConfirmSignUpAsync(signUpRequest);
+            var response = await AwsSdkManager.Instance.GetCognitoService().ConfirmSignUpAsync(signUpRequest);
             return response.HttpStatusCode == HttpStatusCode.OK;
         }
     }

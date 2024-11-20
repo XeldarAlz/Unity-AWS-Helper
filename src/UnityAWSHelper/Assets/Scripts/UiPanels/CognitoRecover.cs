@@ -15,7 +15,7 @@ namespace UiPanels
         public async void Recover()
         {
             bool success = await ForgotPasswordAsync();
-            CognitoUiManager.Instance.SetFeedbackText($"Recovery status: Successful");
+            AwsUiManager.Instance.SetFeedbackText($"Recovery status: Successful");
         }
         
         private async Task<bool> ForgotPasswordAsync()
@@ -23,10 +23,10 @@ namespace UiPanels
             var recoveryRequest = new ForgotPasswordRequest()
             {
                 Username = _recoverEmail.text,
-                ClientId = CognitoSdkManager.Instance.GetAppClientId()
+                ClientId = AwsSdkManager.Instance.GetAppClientId()
             };
 
-            var response = await CognitoSdkManager.Instance.GetCognitoService().ForgotPasswordAsync(recoveryRequest);
+            var response = await AwsSdkManager.Instance.GetCognitoService().ForgotPasswordAsync(recoveryRequest);
             return response.HttpStatusCode == HttpStatusCode.OK;
         }
     }

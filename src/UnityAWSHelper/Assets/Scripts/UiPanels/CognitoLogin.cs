@@ -29,7 +29,7 @@ namespace UiPanels
 
         private void DecodeIdToken()
         {
-            string[] splitToken = CognitoSdkManager.Instance.UserIdToken.Split('.');
+            string[] splitToken = AwsSdkManager.Instance.UserIdToken.Split('.');
 
             if (splitToken.Length == 3)
             {
@@ -46,7 +46,7 @@ namespace UiPanels
                 string dataStr = System.Text.UTF8Encoding.UTF8.GetString(bytes);
                 CognitoHostedUiUser user = JsonUtility.FromJson<CognitoHostedUiUser>(dataStr);
                 
-                CognitoUiManager.Instance.SetFeedbackText($"Hello {user.nickname}");
+                AwsUiManager.Instance.SetFeedbackText($"Hello {user.nickname}");
             }
         }
 
@@ -59,16 +59,16 @@ namespace UiPanels
             var authRequest = new InitiateAuthRequest
 
             {
-                ClientId = CognitoSdkManager.Instance.GetAppClientId(),
+                ClientId = AwsSdkManager.Instance.GetAppClientId(),
                 AuthParameters = authParameters,
                 AuthFlow = AuthFlowType.USER_PASSWORD_AUTH,
             };
 
-            var response = await CognitoSdkManager.Instance.GetCognitoService().InitiateAuthAsync(authRequest);
+            var response = await AwsSdkManager.Instance.GetCognitoService().InitiateAuthAsync(authRequest);
             
-            CognitoSdkManager.Instance.UserAccessToken = response.AuthenticationResult.AccessToken;
-            CognitoSdkManager.Instance.UserIdToken = response.AuthenticationResult.IdToken;
-            CognitoSdkManager.Instance.UserRefreshToken = response.AuthenticationResult.RefreshToken;
+            AwsSdkManager.Instance.UserAccessToken = response.AuthenticationResult.AccessToken;
+            AwsSdkManager.Instance.UserIdToken = response.AuthenticationResult.IdToken;
+            AwsSdkManager.Instance.UserRefreshToken = response.AuthenticationResult.RefreshToken;
             
             return response.HttpStatusCode == HttpStatusCode.OK;
         }
@@ -77,12 +77,12 @@ namespace UiPanels
         {
             var getUserRequest = new GetUserRequest()
             {
-                AccessToken = CognitoSdkManager.Instance.UserAccessToken
+                AccessToken = AwsSdkManager.Instance.UserAccessToken
             };
 
-            var response = await CognitoSdkManager.Instance.GetCognitoService().GetUserAsync(getUserRequest);
+            var response = await AwsSdkManager.Instance.GetCognitoService().GetUserAsync(getUserRequest);
             var userNickname = response.UserAttributes.Find(attribute => attribute.Name.Equals("nickname")).Value;
-            CognitoUiManager.Instance.SetFeedbackText($"Successfully logged in. Welcome {userNickname}!");
+            AwsUiManager.Instance.SetFeedbackText($"Successfully logged in. Welcome {userNickname}!");
         
             return response.HttpStatusCode == HttpStatusCode.OK;
         }

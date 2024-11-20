@@ -9,13 +9,14 @@ using UnityEngine;
 
 namespace Managers
 {
-    public class CognitoSdkManager : MonoBehaviour
+    public class AwsSdkManager : MonoBehaviour
     {
-        public static CognitoSdkManager Instance { get; private set; }
+        public static AwsSdkManager Instance { get; private set; }
     
         public string UserAccessToken { get; set; }
         public string UserIdToken { get; set; }
         public string UserRefreshToken { get; set; }
+        public string UserIdentityId { get; set; }
         
         // Change these with new config on AWS Console
         // COGNITO
@@ -26,13 +27,16 @@ namespace Managers
         private readonly RegionEndpoint _cognitoRegion = RegionEndpoint.EUWest3;
         
         // S3
-        private const string PROVIDER_NAME = "cognito-idp.eu-west-3.amazonaws.com"; //
+        private const string PROVIDER_NAME = "cognito-idp.eu-west-3.amazonaws.com";
         
         // DYNAMODB
         // Only for testing purposes. Exposing this data is not good practice because it is sensitive data.
         // Should not be exposed directly. Tables needs to be secure!
         private const string DYNAMO_DB_ACCESS_KEY = "AKIAQ4NSBEGGX6LBTJUN";
         private const string DYNAMO_DB_SECRET_KEY = "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";
+        
+        // API Gateway
+        private const string API_GATEWAY_URI = "https://023ptlkzz8.execute-api.eu-west-3.amazonaws.com/prod";
 
         private void Awake()
         {
@@ -46,6 +50,7 @@ namespace Managers
         }
         public string GetAppClientId() => APP_CLIENT_ID;
         public string GetHostedUiDomain() => HOSTED_UI_DOMAIN;
+        public string GetApiGatewayUri() => API_GATEWAY_URI;
 
         public AmazonCognitoIdentityProviderClient GetCognitoService()
         {
@@ -64,7 +69,8 @@ namespace Managers
             credentials.AddLogin(
                 $"{PROVIDER_NAME}/{USER_POOL_ID}", 
                 UserIdToken);
-            
+
+            UserIdentityId = credentials.GetIdentityId();
             return new AmazonS3Client(credentials, _cognitoRegion);
         }
         public AmazonDynamoDBClient GetDynamoDBClient()

@@ -17,7 +17,7 @@ namespace UiPanels
         public async void ConfirmRecover()
         {
             bool success = await ConfirmForgotPasswordAsync();
-            CognitoUiManager.Instance.SetFeedbackText($"Successfully confirmed account recovery!");
+            AwsUiManager.Instance.SetFeedbackText($"Successfully confirmed account recovery!");
         }
 
         private async Task<bool> ConfirmForgotPasswordAsync()
@@ -25,12 +25,12 @@ namespace UiPanels
             var confirmRecoverRequest = new ConfirmForgotPasswordRequest()
             {
                 Username = _recoverEmail.text,
-                ClientId = CognitoSdkManager.Instance.GetAppClientId(),
+                ClientId = AwsSdkManager.Instance.GetAppClientId(),
                 ConfirmationCode = _recoverCode.text,
                 Password = _recoverNewPassword.text
             };
 
-            var response = await CognitoSdkManager.Instance.GetCognitoService()
+            var response = await AwsSdkManager.Instance.GetCognitoService()
                 .ConfirmForgotPasswordAsync(confirmRecoverRequest);
             
             return response.HttpStatusCode == HttpStatusCode.OK;

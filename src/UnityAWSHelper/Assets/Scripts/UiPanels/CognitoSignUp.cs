@@ -19,7 +19,7 @@ namespace UiPanels
         {
             bool success = await SignUpAsync();
 
-            CognitoUiManager.Instance.SetFeedbackText(success
+            AwsUiManager.Instance.SetFeedbackText(success
                 ? "Successfully signed up"
                 : "An error occured while signing up");
         }
@@ -55,11 +55,11 @@ namespace UiPanels
             {
                 UserAttributes = userAttrsList,
                 Username = _signUpEmail.text,
-                ClientId = CognitoSdkManager.Instance.GetAppClientId(),
+                ClientId = AwsSdkManager.Instance.GetAppClientId(),
                 Password = _signUpPassword.text
             };
 
-            var response = await CognitoSdkManager.Instance.GetCognitoService().SignUpAsync(signUpRequest);
+            var response = await AwsSdkManager.Instance.GetCognitoService().SignUpAsync(signUpRequest);
             return response.HttpStatusCode == HttpStatusCode.OK;
         }
     }

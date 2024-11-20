@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace UiPanels
 {
-    public class CognitoLambdaFunction : MonoBehaviour
+    public class AwsLambda : MonoBehaviour
     {
         public async void InvokeLambdaFunction()
         {
@@ -16,6 +16,8 @@ namespace UiPanels
         
         private async Task<bool> InvokeFunctionAsync()
         {
+            var client = AwsSdkManager.Instance.GetLambdaClient();
+            
             // Function name must be the same string from Cognito Lambda Console
             var request = new InvokeRequest
             {
@@ -23,10 +25,10 @@ namespace UiPanels
                 Payload = "{\"param\": \"Custom test parameter sent to cognito\"}"
             };
 
-            var response = await CognitoSdkManager.Instance.GetLambdaClient().InvokeAsync(request);
+            var response = await client.InvokeAsync(request);
             string returnValue = System.Text.Encoding.UTF8.GetString(response.Payload.ToArray());
             
-            CognitoUiManager.Instance.SetFeedbackText(returnValue);
+            AwsUiManager.Instance.SetFeedbackText(returnValue);
             
             return response.HttpStatusCode == HttpStatusCode.OK;
         }
