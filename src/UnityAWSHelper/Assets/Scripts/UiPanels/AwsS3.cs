@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Amazon.CognitoIdentity;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -11,11 +12,18 @@ namespace UiPanels
     {
         public void PickImage()
         {
-            NativeGallery.Permission permission = NativeGallery.GetImageFromGallery(async (path) =>
+            try
             {
-                bool success = await UploadFileAsync(path);
-                AwsUiManager.Instance.SetFeedbackText($"Upload status: {success}");
-            });
+                NativeGallery.Permission permission = NativeGallery.GetImageFromGallery(async (path) =>
+                {
+                    bool success = await UploadFileAsync(path);
+                    AwsUiManager.Instance.SetFeedbackText($"Upload status: {success}");
+                });
+            }
+            catch (Exception e)
+            {
+                AwsUiManager.Instance.SetFeedbackText(e.Message);
+            }
         }
         
         public static async Task<bool> UploadFileAsync(string filePath)

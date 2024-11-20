@@ -36,14 +36,12 @@ namespace UiPanels
 
         private void OnDeepLinkActivated(string url)
         {
-            Debug.Log($"DeepLinkActivated:{Application.absoluteURL}");
-
+            AwsUiManager.Instance.SetFeedbackText($"DeepLinkActivated:{Application.absoluteURL}");
+            
             string[] splittedUrl = url.Split('#');
 
             if (splittedUrl.Length == 2)
             {
-                Debug.Log($"Splitted url length: {splittedUrl.Length} ");
-
                 string urlParams = splittedUrl[1];
 
                 if (!string.IsNullOrEmpty(urlParams))
@@ -56,7 +54,7 @@ namespace UiPanels
                     }
                     else
                     {
-                        Debug.Log($"Access token is null");
+                        AwsUiManager.Instance.SetFeedbackText($"Access token is null");
                     }
                
                     _signInText.text = _accessToken;
@@ -76,10 +74,7 @@ namespace UiPanels
 
                 if (webRequest.result == UnityWebRequest.Result.Success)
                 {
-                    Debug.Log($"Web request success");
-
                     CognitoHostedUiUser user = JsonUtility.FromJson<CognitoHostedUiUser>(webRequest.downloadHandler.text);
-                    Debug.Log($"Web request download handler: {webRequest.downloadHandler.text}");
                     
                     _signInText.text = $"Welcome {user.nickname}, You are now logged in!";
                     
@@ -90,7 +85,7 @@ namespace UiPanels
                 }
                 else
                 {
-                    Debug.Log($"Web request failed: {webRequest.error}");
+                    AwsUiManager.Instance.SetFeedbackText($"Web request failed: {webRequest.error}");
                 }
             }
         }
@@ -103,7 +98,7 @@ namespace UiPanels
 
                 if (uwr.result != UnityWebRequest.Result.Success)
                 {
-                    Debug.Log($"Web request failed for profile picture: {uwr.error}");
+                    AwsUiManager.Instance.SetFeedbackText($"Web request failed for profile picture: {uwr.error}");
                 }
                 else
                 {

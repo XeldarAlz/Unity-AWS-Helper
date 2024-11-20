@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2.Model;
 using Managers;
@@ -10,8 +11,15 @@ namespace UiPanels
     {
         public async void UploadItem()
         {
-            bool success = await UploadItemAsync();
-            AwsUiManager.Instance.SetFeedbackText($"DynamoDB status: {success}");
+            try
+            {
+                bool success = await UploadItemAsync();
+                AwsUiManager.Instance.SetFeedbackText($"DynamoDB upload status: {success}");
+            }
+            catch (Exception e)
+            {
+                AwsUiManager.Instance.SetFeedbackText(e.Message);
+            }
         }
         
         private static async Task<bool> UploadItemAsync()

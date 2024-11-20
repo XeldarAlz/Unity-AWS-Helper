@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider.Model;
 using Managers;
@@ -14,8 +15,15 @@ namespace UiPanels
 
         public async void Recover()
         {
-            bool success = await ForgotPasswordAsync();
-            AwsUiManager.Instance.SetFeedbackText($"Recovery status: Successful");
+            try
+            {
+                bool success = await ForgotPasswordAsync();
+                AwsUiManager.Instance.SetFeedbackText($"Recovery status: {success}");
+            }
+            catch (Exception e)
+            {
+                AwsUiManager.Instance.SetFeedbackText(e.Message);
+            }
         }
         
         private async Task<bool> ForgotPasswordAsync()

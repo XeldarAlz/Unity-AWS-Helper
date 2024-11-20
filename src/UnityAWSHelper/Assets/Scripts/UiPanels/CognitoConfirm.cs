@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider.Model;
 using Managers;
@@ -15,11 +16,15 @@ namespace UiPanels
 
         public async void ConfirmSignUp()
         {
-            bool success = await ConfirmSignupAsync();
-        
-            AwsUiManager.Instance.SetFeedbackText(success
-                ? "Successfully confirmed user"
-                : "An error occured while confirming user");
+            try
+            {
+                bool success = await ConfirmSignupAsync();
+                AwsUiManager.Instance.SetFeedbackText($"Confirm status: {success}");
+            }
+            catch (Exception e)
+            {
+                AwsUiManager.Instance.SetFeedbackText(e.Message);
+            }
         }
 
         private async Task<bool> ConfirmSignupAsync()

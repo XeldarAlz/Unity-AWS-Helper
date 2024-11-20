@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider.Model;
 using Managers;
 using UnityEngine;
@@ -9,14 +10,28 @@ namespace UiPanels
     {
         public async void GlobalSignOut()
         {
-            bool success = await GlobalSignOutAsync();
-            AwsUiManager.Instance.SetFeedbackText($"Global sign-out status: {success}");
+            try
+            {
+                bool success = await GlobalSignOutAsync();
+                AwsUiManager.Instance.SetFeedbackText($"Global sign-out status: {success}");
+            }
+            catch (Exception e)
+            {
+                AwsUiManager.Instance.SetFeedbackText(e.Message);
+            }
         }
 
         public async void PartialSignOut()
         {
-            bool success = await PartialSignOutAsync();
-            AwsUiManager.Instance.SetFeedbackText($"Partial sign-out status: {success}");
+            try
+            {
+                bool success = await PartialSignOutAsync();
+                AwsUiManager.Instance.SetFeedbackText($"Partial sign-out status: {success}");
+            }
+            catch (Exception e)
+            {
+                AwsUiManager.Instance.SetFeedbackText(e.Message);
+            }
         }
         
         private async Task<bool> GlobalSignOutAsync()

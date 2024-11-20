@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using Managers;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -9,7 +10,14 @@ namespace UiPanels
     {
         public void CallApi()
         {
-            StartCoroutine(CallApiAsync());
+            try
+            {
+                StartCoroutine(CallApiAsync());
+            }
+            catch (Exception e)
+            {
+                AwsUiManager.Instance.SetFeedbackText(e.Message);
+            }
         }
 
         private IEnumerator CallApiAsync()
@@ -22,8 +30,6 @@ namespace UiPanels
 
                 yield return www.SendWebRequest();
                 bool success = www.result == UnityWebRequest.Result.Success;
-                
-                Debug.Log($"Call API status: {success}");
                 AwsUiManager.Instance.SetFeedbackText(www.downloadHandler.text);
             }
         }

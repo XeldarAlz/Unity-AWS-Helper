@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider;
@@ -17,13 +18,20 @@ namespace UiPanels
 
         public async void Login()
         {
-            bool success = await InitiateAuthAsync();
-            Debug.Log($"Login result: {success}");
-
-            // success = await GetUserAsync();
-            if (success)
+            try
             {
-                DecodeIdToken();
+                bool success = await InitiateAuthAsync();
+
+                if (success)
+                {
+                    DecodeIdToken();
+                }
+
+                AwsUiManager.Instance.SetFeedbackText($"Login status: {success}");
+            }
+            catch (Exception e)
+            {
+                AwsUiManager.Instance.SetFeedbackText(e.Message);
             }
         }
 

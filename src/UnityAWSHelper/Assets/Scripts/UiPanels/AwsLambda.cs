@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Amazon.Lambda.Model;
 using Managers;
@@ -10,8 +11,14 @@ namespace UiPanels
     {
         public async void InvokeLambdaFunction()
         {
-            bool success = await InvokeFunctionAsync();
-            Debug.Log($"Lambda function executed: {success}");
+            try
+            {
+                bool success = await InvokeFunctionAsync();
+            }
+            catch (Exception e)
+            {
+                AwsUiManager.Instance.SetFeedbackText(e.Message);
+            }
         }
         
         private async Task<bool> InvokeFunctionAsync()
@@ -27,9 +34,7 @@ namespace UiPanels
 
             var response = await client.InvokeAsync(request);
             string returnValue = System.Text.Encoding.UTF8.GetString(response.Payload.ToArray());
-            
             AwsUiManager.Instance.SetFeedbackText(returnValue);
-            
             return response.HttpStatusCode == HttpStatusCode.OK;
         }
     }

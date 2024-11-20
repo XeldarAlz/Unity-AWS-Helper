@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Amazon.CognitoIdentityProvider.Model;
@@ -17,11 +18,15 @@ namespace UiPanels
     
         public async void SignUp()
         {
-            bool success = await SignUpAsync();
-
-            AwsUiManager.Instance.SetFeedbackText(success
-                ? "Successfully signed up"
-                : "An error occured while signing up");
+            try
+            {
+                bool success = await SignUpAsync();
+                AwsUiManager.Instance.SetFeedbackText($"Sign up status: {success}");
+            }
+            catch (Exception e)
+            {
+                AwsUiManager.Instance.SetFeedbackText(e.Message);
+            }
         }
     
         private async Task<bool> SignUpAsync()

@@ -13,14 +13,21 @@ namespace UiPanels
     {
         public async void DeleteUser()
         {
-            bool success = await DeleteUserAsync();
-
-            if (!success)
+            try
             {
-                success = await DeleteUserAsync();
+                bool success = await DeleteUserAsync();
+
+                if (!success)
+                {
+                    success = await DeleteUserAsync();
+                }
+
+                AwsUiManager.Instance.SetFeedbackText($"Delete status: {success}");
             }
-            
-            AwsUiManager.Instance.SetFeedbackText($"Delete status: {success}");
+            catch (Exception e)
+            {
+                AwsUiManager.Instance.SetFeedbackText(e.Message);
+            }
         }
         
         private async Task<bool> DeleteUserAsync()
