@@ -10,6 +10,9 @@ A helper repository for basic AWS Cognito setup. Currently the confirmation for 
 * Confirm Forgot Password
 * Google Play Sign In
 * Logout
-* S3 upload
+* S3 integration & upload files
+* Lambda integration & invoke functions
+* DynamoDB integration & Upload data to data base tables
+* Api gateway integration & Example usage api to work with lambda
 
 - Also have the integrated Cognito Hosted Ui with all previous functions
