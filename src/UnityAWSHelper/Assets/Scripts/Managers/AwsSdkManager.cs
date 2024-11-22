@@ -1,4 +1,7 @@
-﻿using Amazon;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using Amazon;
 using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentityProvider;
 using Amazon.DynamoDBv2;
@@ -12,10 +15,22 @@ namespace Managers
     public class AwsSdkManager : MonoBehaviour
     {
         public static AwsSdkManager Instance { get; private set; }
-    
-        public string UserAccessToken { get; set; }
-        public string UserIdToken { get; set; }
-        public string UserRefreshToken { get; set; }
+
+        public string UserAccessToken
+        {
+            get => PlayerPrefs.GetString("UserAccessToken", default);
+            set => PlayerPrefs.SetString("UserAccessToken", value);
+        }
+        public string UserIdToken
+        {
+            get => PlayerPrefs.GetString("UserIdToken", default);
+            set => PlayerPrefs.SetString("UserIdToken", value);
+        }
+        public string UserRefreshToken
+        {
+            get => PlayerPrefs.GetString("UserRefreshToken", default);
+            set => PlayerPrefs.SetString("UserRefreshToken", value);
+        }
         public string UserIdentityId { get; set; }
         
         // Change these with new config on AWS Console
@@ -48,6 +63,7 @@ namespace Managers
         
             Instance = this;
         }
+
         public string GetAppClientId() => APP_CLIENT_ID;
         public string GetHostedUiDomain() => HOSTED_UI_DOMAIN;
         public string GetApiGatewayUri() => API_GATEWAY_URI;

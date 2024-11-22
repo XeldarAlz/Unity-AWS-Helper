@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -15,6 +16,24 @@ namespace UiPanels
         [Header("Login")]
         [SerializeField] private TMP_InputField _signInEmail;
         [SerializeField] private TMP_InputField _signInPassword;
+
+        private async void Start()
+        {
+            try
+            {
+                bool success = await UseRefreshToken();
+                AwsUiManager.Instance.SetFeedbackText($"Auto login attempt: {success}");
+
+                if (success)
+                {
+                    await GetUserAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                AwsUiManager.Instance.SetFeedbackText(e.Message);
+            }
+        }
 
         public async void Login()
         {
@@ -92,6 +111,29 @@ namespace UiPanels
             var userNickname = response.UserAttributes.Find(attribute => attribute.Name.Equals("nickname")).Value;
             AwsUiManager.Instance.SetFeedbackText($"Successfully logged in. Welcome {userNickname}!");
         
+            return response.HttpStatusCode == HttpStatusCode.OK;
+        }
+        
+        private async Task<bool> UseRefreshToken()
+        {
+            var authRequest = new InitiateAuthRequest
+            {
+                ClientId = AwsSdkManager.Instance.GetAppClientId(),
+                AuthParameters = new Dictionary<string, string>
+                {
+                    { "REFRESH_TOKEN", AwsSdkManager.Instance.UserRefreshToken }
+                },
+                AuthFlow = AuthFlowType.REFRESH_TOKEN_AUTH,
+            };
+
+            var response = AwsSdkManager.Instance.GetCognitoService().InitiateAuthAsync(authRequest).Result;
+
+            if (response.AuthenticationResult != null)
+            {
+                AwsSdkManager.Instance.UserAccessToken = response.AuthenticationResult.AccessToken;
+                AwsSdkManager.Instance.UserIdToken = response.AuthenticationResult.IdToken;
+            }
+            
             return response.HttpStatusCode == HttpStatusCode.OK;
         }
     }
