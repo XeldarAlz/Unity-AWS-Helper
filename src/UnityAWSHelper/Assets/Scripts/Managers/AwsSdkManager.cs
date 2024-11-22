@@ -35,7 +35,7 @@ namespace Managers
         }
         public string UserIdentityId { get; set; }
         
-        // Change these with new config on AWS Console
+        // !!!!! If you want to make this project work, change the values below with your own !!!!!
         // COGNITO
         private const string APP_CLIENT_ID = "e702rji3stjh5ril5pfoalcav";
         private const string HOSTED_UI_DOMAIN = "https://evry-testing.auth.eu-west-3.amazoncognito.com";
