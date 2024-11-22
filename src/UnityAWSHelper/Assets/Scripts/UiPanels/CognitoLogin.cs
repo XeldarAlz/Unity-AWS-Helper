@@ -102,19 +102,14 @@ namespace UiPanels
 
         private async Task<bool> GetUserAsync()
         {
-            var getUserRequest = new GetUserRequest()
-            {
-                AccessToken = AwsSdkManager.Instance.UserAccessToken
-            };
-
-            var response = await AwsSdkManager.Instance.GetCognitoService().GetUserAsync(getUserRequest);
-            var userNickname = response.UserAttributes.Find(attribute => attribute.Name.Equals("nickname")).Value;
+            var currentUserResponse = await AwsSdkManager.Instance.GetCurrentUserResponse();
+            var userNickname = currentUserResponse.UserAttributes.Find(attribute => attribute.Name.Equals("nickname")).Value;
             AwsUiManager.Instance.SetFeedbackText($"Successfully logged in. Welcome {userNickname}!");
         
-            return response.HttpStatusCode == HttpStatusCode.OK;
+            return currentUserResponse.HttpStatusCode == HttpStatusCode.OK;
         }
         
-        private async Task<bool> UseRefreshToken()
+        private Task<bool> UseRefreshToken()
         {
             var authRequest = new InitiateAuthRequest
             {
@@ -134,7 +129,7 @@ namespace UiPanels
                 AwsSdkManager.Instance.UserIdToken = response.AuthenticationResult.IdToken;
             }
             
-            return response.HttpStatusCode == HttpStatusCode.OK;
+            return Task.FromResult(response.HttpStatusCode == HttpStatusCode.OK);
         }
     }
 }
