@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Amazon;
 using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentityProvider;
+using Amazon.CognitoIdentityProvider.Model;
 using Amazon.DynamoDBv2;
 using Amazon.Lambda;
 using Amazon.Runtime;
@@ -92,6 +94,15 @@ namespace Managers
         public AmazonDynamoDBClient GetDynamoDBClient()
         {
             return new AmazonDynamoDBClient(DYNAMO_DB_ACCESS_KEY, DYNAMO_DB_SECRET_KEY, _cognitoRegion);
+        }
+        public async Task<GetUserResponse> GetCurrentUserResponse()
+        {
+            var getUserRequest = new GetUserRequest()
+            {
+                AccessToken = UserAccessToken
+            };
+
+            return await GetCognitoService().GetUserAsync(getUserRequest);
         }
     }
 }
