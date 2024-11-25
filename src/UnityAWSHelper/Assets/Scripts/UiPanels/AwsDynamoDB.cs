@@ -37,13 +37,15 @@ namespace UiPanels
                 AwsUiManager.Instance.SetFeedbackText(e.Message);
             }
         }
-        
+
         private async Task<bool> DownloadItemAsync()
         {
             try
             {
                 var currentUserResponse = await AwsSdkManager.Instance.GetCurrentUserResponse();
-                var email = currentUserResponse.UserAttributes.Find(attribute => attribute.Name.Equals("email")).Value;
+               
+                string email = currentUserResponse.UserAttributes.Find(attribute => attribute.Name.Equals("email"))
+                    .Value;
                 var result = await FetchUserData(email);
 
                 if (result != null)
@@ -52,7 +54,7 @@ namespace UiPanels
                     AwsUiManager.Instance.SetFeedbackText(feedback);
                     return true;
                 }
-                
+
                 return false;
             }
             catch (Exception e)
@@ -61,7 +63,7 @@ namespace UiPanels
                 return false;
             }
         }
-        
+
         private async Task<Dictionary<string, AttributeValue>> FetchUserData(string email)
         {
             var client = AwsSdkManager.Instance.GetDynamoDBClient();
@@ -71,7 +73,7 @@ namespace UiPanels
                 TableName = "MyTable",
                 Key = new Dictionary<string, AttributeValue>
                 {
-                    ["email"] = new AttributeValue { S = email }
+                    ["email"] = new() { S = email }
                 }
             };
 
@@ -79,13 +81,13 @@ namespace UiPanels
             return response.HttpStatusCode == HttpStatusCode.OK ? response.Item : null;
         }
 
-        
+
         private static async Task<bool> UploadItemAsync()
         {
             var client = AwsSdkManager.Instance.GetDynamoDBClient();
             var currentUserResponse = await AwsSdkManager.Instance.GetCurrentUserResponse();
-            var email = currentUserResponse.UserAttributes.Find(attribute => attribute.Name.Equals("email")).Value;
-            
+            string email = currentUserResponse.UserAttributes.Find(attribute => attribute.Name.Equals("email")).Value;
+
             // S = String
             // N = Number
             // L = List
@@ -97,9 +99,9 @@ namespace UiPanels
                 {
                     L =
                     {
-                        new AttributeValue { N = $"{Random.Range(0, 10)}"},
-                        new AttributeValue { N = $"{Random.Range(0, 100)}"},
-                        new AttributeValue { N = $"{Random.Range(0, 1000)}"}
+                        new AttributeValue { N = $"{Random.Range(0, 10)}" },
+                        new AttributeValue { N = $"{Random.Range(0, 100)}" },
+                        new AttributeValue { N = $"{Random.Range(0, 1000)}" }
                     }
                 }
             };
@@ -108,11 +110,11 @@ namespace UiPanels
             var request = new PutItemRequest
             {
                 TableName = "MyTable",
-                Item = item,
+                Item = item
             };
 
             var response = await client.PutItemAsync(request);
-            return response.HttpStatusCode == System.Net.HttpStatusCode.OK;
+            return response.HttpStatusCode == HttpStatusCode.OK;
         }
     }
 }
