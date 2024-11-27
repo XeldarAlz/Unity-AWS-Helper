@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Amazon;
 using Amazon.CognitoIdentity;
 using Amazon.CognitoIdentityProvider;
@@ -93,7 +90,18 @@ namespace Managers
         }
         public AmazonDynamoDBClient GetDynamoDBClient()
         {
-            return new AmazonDynamoDBClient(DYNAMO_DB_ACCESS_KEY, DYNAMO_DB_SECRET_KEY, _cognitoRegion);
+            // Also can be used this way.
+            // return new AmazonDynamoDBClient(DYNAMO_DB_ACCESS_KEY, DYNAMO_DB_SECRET_KEY, _cognitoRegion);
+            
+            var credentials = new CognitoAWSCredentials(
+                IDENTITY_POOL_ID,
+                _cognitoRegion);
+            
+            credentials.AddLogin(
+                $"{PROVIDER_NAME}/{USER_POOL_ID}", 
+                UserIdToken);
+            
+            return new AmazonDynamoDBClient(credentials, _cognitoRegion);
         }
         public async Task<GetUserResponse> GetCurrentUserResponse()
         {
