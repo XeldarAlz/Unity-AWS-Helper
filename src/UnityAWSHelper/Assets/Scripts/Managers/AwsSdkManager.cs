@@ -81,6 +81,9 @@ namespace Managers
         {
             var credentials = new CognitoAWSCredentials(IDENTITY_POOL_ID, _cognitoRegion);
             
+            // Add login to make it run on auth role. If no login added, it acts as guest role
+            // Depending on your aws policies, this can be unauthorized.
+            // If so, give permissions to the role you are using
             credentials.AddLogin(
                 $"{PROVIDER_NAME}/{USER_POOL_ID}", 
                 UserIdToken);
@@ -97,6 +100,9 @@ namespace Managers
                 IDENTITY_POOL_ID,
                 _cognitoRegion);
             
+            // Add login to make it run on auth role. If no login added, it acts as guest role
+            // Depending on your aws policies, this can be unauthorized.
+            // If so, give permissions to the role you are using
             credentials.AddLogin(
                 $"{PROVIDER_NAME}/{USER_POOL_ID}", 
                 UserIdToken);
