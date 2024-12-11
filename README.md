@@ -1,6 +1,9 @@
 # Unity AWS Helper
 I couldn't find a starting point or a working guide how to implement AWS into Unity. All official repositories are out dated. So I decided to create my own. Feel free to contribute. This repository show examples how to use popular web services such as Cognito or S3 in Unity.
 
+# Unity Version
+Currently using 2022.3.53f1. But should work in other versions.
+
 # About repository
 A helper repository for basic AWS setup on unity. In order to use this repository, you need to change values inside of the src/UnityAWSHelper/Assets/Scripts/Managers/AwsSdkManager.cs with your own credentials. Use AWS console and use the related services such as Cognito. Then copy your configs into the scripts to related values. 
 
